@@ -29,14 +29,15 @@ class RentController extends Controller
         $start_date = $request->start_date;
         $end_date = $request->end_date;
         $videoPath = $request->file('video')->store('insurence_videos', 'public');
+        // dd(Client::find($client_id));
         if (Client::find($client_id)->hasRented) {
             return response()->json(['error' => "Client has already rented the car!"]);
         }
-        if (Client::find($car_id)->isRented) {
+        if (Car::find($car_id)->isRented) {
             return response()->json(['error' => "Car already rented!"]);
         }
-        Client::find($client_id)->update(['hasRented' => true]);
-        Car::find($car_id)->update(['isRented' => true]);
+        Client::find($client_id)->update(['hasRented' => 1]);
+        Car::find($car_id)->update(['isRented' => 1]);
         $rent = new CarRenting([
             'client_id' => $client_id,
             'car_id' => $car_id,

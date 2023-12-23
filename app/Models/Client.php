@@ -18,4 +18,7 @@ class Client extends Model
         'front_id_image',
         'back_id_image'
     ];
+    protected $casts = [
+        'hasRented' => 'boolean',
+    ];
 }

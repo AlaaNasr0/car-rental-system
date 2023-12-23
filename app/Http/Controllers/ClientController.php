@@ -16,11 +16,7 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $sponsors = Sponser::all();
-
-        if ($request->expectsJson()) {
-            return response()->json(['sponsors' => $sponsors]);
-        }
-        return view('client.create', $sponsors);
+        return response()->json(['sponsors' => $sponsors]);
     }
     public function create(Request $request)
     {
@@ -34,19 +30,10 @@ class ClientController extends Controller
         //new_sponsor_name
         //new_sponsor_number
         $sponsor_id = null;
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'address' => 'required|string',
-            'sponsor_name' => 'string',
-            'sponsor_number' => 'integer',
-            'phone' => 'required|string',
-            'front_id_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'back_id_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
         if ($request->sponsor_status == 'new') {
             $new_sponsor = new Sponser([
-                'name' => $validatedData['sponsor_name'],
-                'number' => $validatedData['sponsor_number'],
+                'name' => $request->sponsor_name,
+                'number' => $request->sponsor_number,
             ]);
             $new_sponsor->save();
             $sponsor_id = $new_sponsor->id;
@@ -57,19 +44,23 @@ class ClientController extends Controller
         }
 
         $ID1Path = $request->file('front_id_image')->store('id_images', 'public');
-        $ID2Path = $request->file('back_id_image')->store('id_images', 'public');
+        $ID2Path = $request->file('back_id_image') ? $request->file('back_id_image')->store('id_images', 'public') : null;
 
         $client = new Client([
-            'name' => $validatedData['name'],
-            'phone' => $validatedData['phone'],
+            'name' => $request->name,
+            'phone' => $request->phone,
             'hasRented' => false,
             'sponsor_id' => $sponsor_id,
             'front_id_image' => $ID1Path,
             'back_id_image' => $ID2Path,
-            'address' => $validatedData['address'],
+            'address' => $request->address,
         ]);
 
         $client->save();
+        if ($request->sponsor_status != 'without') {
+            Sponser::find($sponsor_id)->update(['client_id' => $client->id]);
+        }
+
 
         return redirect()->route('home');
     }
@@ -95,8 +86,6 @@ class ClientController extends Controller
             'front_id_image' => $client->front_id_image,
             'back_id_image' => $client->back_id_image ?? null,
         ];
-        if ($request->expectsJson()) {
-            return response()->json(['clientDetails' => $clientData]);
-        }
+        return response()->json(['clientDetails' => $clientData]);
     }
 }

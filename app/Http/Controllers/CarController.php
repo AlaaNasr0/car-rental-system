@@ -16,18 +16,14 @@ class CarController extends Controller
     }
     public function create(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'licence_plate_number' => 'required|string|unique:cars,licence_plate_number',
-            'model' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+
+
         $imagePath = $request->file('image')->store('car_images', 'public');
         $car = new Car([
-            'name' => $validatedData['name'],
+            'name' => $request->name,
             'isRented' => 0,
-            'licence_plate_number' => $validatedData['licence_plate_number'],
-            'model' => $validatedData['model'],
+            'licence_plate_number' => $request->licence_plate_number,
+            'model' => $request->model,
             'image' => $imagePath,
         ]);
         $car->save();
@@ -49,8 +45,6 @@ class CarController extends Controller
                 'ending_date' => $car->isRented ? $carRenting->end_date : null,
             ];
         }
-        if ($request->expectsJson()) {
-            return response()->json(['carData' => $carData]);
-        }
+        return response()->json(['carData' => $carData]);
     }
 }

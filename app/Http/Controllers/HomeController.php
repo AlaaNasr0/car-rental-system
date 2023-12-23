@@ -36,7 +36,7 @@ class HomeController extends Controller
         $rentings = CarRenting::where('renting_finished', false)->get();
 
         foreach ($rentings as $renting) {
-            if ($renting->end_date && $renting->end_date <= now()) {
+            if ($renting->end_date && strtotime($renting->end_date) <= strtotime(now())) {
                 CarRenting::find($renting->id)->update(['renting_finished' => true]);
                 Client::find($renting->client_id)->update(['hasRented' => false]);
                 Car::find($renting->car_id)->update(['isRented' => false]);
@@ -45,6 +45,7 @@ class HomeController extends Controller
 
         foreach ($clients as $client) {
             $clientData[] = [
+                'client_id' => $client->id,
                 'clientName' => $client->name,
                 'clientNumber' => $client->phone,
                 'rentingCount' => CarRenting::where('client_id', $client->id)->count(),
