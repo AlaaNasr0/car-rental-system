@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Car;
 use App\Models\CarRenting;
 use App\Models\Sponser;
+use App\Models\Client;
 
 class CarController extends Controller
 {
@@ -35,12 +36,11 @@ class CarController extends Controller
         $carData = [];
         foreach ($cars as $car) {
             $carRenting = CarRenting::where('car_id', $car->id)->latest()->first();
-            $sponsor = Sponser::where('car_id', $car->id)->first();
             $carData[] = [
                 'name' => $car->name,
                 'model' => $car->model,
                 'isRented' => $car->isRented,
-                'sponsor' => $sponsor ? $sponsor->id : 'No sponsor',
+                'client_name' => $car->isRented ? Client::find($carRenting->client_id)->name : null,
                 'starting_date' => $car->isRented ? $carRenting->start_date : null,
                 'ending_date' => $car->isRented ? $carRenting->end_date : null,
             ];

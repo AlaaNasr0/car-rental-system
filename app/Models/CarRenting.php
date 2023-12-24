@@ -12,6 +12,7 @@ class CarRenting extends Model
         'client_id',
         'car_id',
         'renting_finished',
+        'sponsor_id',
         'start_date',
         'end_date',
         'video'

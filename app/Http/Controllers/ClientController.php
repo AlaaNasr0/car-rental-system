@@ -81,6 +81,7 @@ class ClientController extends Controller
             'name' => $client->name,
             'phone' => $client->phone,
             'address' => $client->address,
+            'hasRented' => $client->hasRented,
             'sponsor_name' => $sponsor->name ?? null,
             'sponsor_number' => $sponsor->number ?? null,
             'front_id_image' => $client->front_id_image,

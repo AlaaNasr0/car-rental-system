@@ -27,11 +27,14 @@ class StatsController extends Controller
     {
         $rentings = CarRenting::where('car_id', $request->id)->get();
         $data = [];
+        $sponsor_id = Client::find($rentings[0]->client_id)->sponsor_id;
+        $sponsor = Sponser::find($sponsor_id)->first();
         foreach ($rentings as $renting) {
+
             $data[] = [
                 'client_name' => Client::where('id', $renting->client_id)->first()->name,
-                'sponsor_name' => Sponser::where('id', $renting->sponsor_id)->first()->name ?? null,
-                'sponsor_name' => Sponser::where('id', $renting->sponsor_id)->first()->number ?? null,
+                'sponsor_name' => $sponsor->name ?? null,
+                'sponsor_number' => $sponsor->number ?? null,
                 'start_date' => $renting->start_date,
                 'end_date' => $renting->end_date
             ];
