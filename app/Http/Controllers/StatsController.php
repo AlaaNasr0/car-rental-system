@@ -16,6 +16,7 @@ class StatsController extends Controller
         $data = [];
         foreach ($cars as $car) {
             $data[] = [
+                'id' => $car->id,
                 'name' => $car->name,
                 'licence_plate_number' => $car->licence_plate_number,
                 'isRented' => $car->isRented
@@ -27,10 +28,10 @@ class StatsController extends Controller
     {
         $rentings = CarRenting::where('car_id', $request->id)->get();
         $data = [];
-        $sponsor_id = Client::find($rentings[0]->client_id)->sponsor_id;
-        $sponsor = Sponser::find($sponsor_id)->first();
-        foreach ($rentings as $renting) {
 
+        foreach ($rentings as $renting) {
+            $sponsor_id = Client::find($renting->client_id)->sponsor_id;
+            $sponsor = $sponsor_id ? Sponser::find($sponsor_id)->first() : null;
             $data[] = [
                 'client_name' => Client::where('id', $renting->client_id)->first()->name,
                 'sponsor_name' => $sponsor->name ?? null,

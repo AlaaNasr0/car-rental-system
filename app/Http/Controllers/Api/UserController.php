@@ -26,7 +26,7 @@ class UserController extends Controller
             $validator = Validator::make(
                 $request->all(),
                 [
-                    'name' => ['required', 'string'],
+                    'username' => ['required', 'string', 'unique:users'],
                     'email' => ['required', 'unique:users'],
                     'password' => ['required']
                 ]
@@ -35,7 +35,7 @@ class UserController extends Controller
                 return response()->json(['error' => $validator->errors()], 401);
             }
             $user = User::create([
-                'name' => $request->input('name'),
+                'username' => $request->input('username'),
                 'email' => $request->input('email'),
                 'password' => bcrypt($request->input('password'))
             ]);
@@ -56,17 +56,17 @@ class UserController extends Controller
             $validateUser = Validator::make(
                 $request->all(),
                 [
-                    'email' => 'required|email',
+                    'username' => 'required',
                     'password' => 'required'
                 ]
             );
             if ($validateUser->fails()) {
                 return response()->json(['error' => $validateUser->errors()]);
             }
-            if (!Auth::attempt($request->only(['email', 'password']))) {
-                return response()->json(['error' => "Email & pass doesn't match"], 401);
+            if (!Auth::attempt($request->only(['username', 'password']))) {
+                return response()->json(['error' => "Username & pass doesn't match"], 401);
             }
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('username', $request->username)->first();
             $token = $user->createToken("API TOKEN")->plainTextToken;
             return response()->json([
                 'status' => true,
