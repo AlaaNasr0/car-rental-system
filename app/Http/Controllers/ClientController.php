@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Sponser;
+use App\Models\CarRenting;
+use App\Models\Car;
 
 class ClientController extends Controller
 {
@@ -76,6 +78,8 @@ class ClientController extends Controller
     {
         $client = Client::where('id', $request->id)->first();
         $sponsor = Sponser::where('client_id', $client->id)->first() ?? null;
+        $current_renting = CarRenting::where('client_id', $request->id)->where('renting_finished', 0)->latest()->first() ?? null;
+        $car = $current_renting ? Car::find($current_renting->car_id) : null;
         $clientData = [
             'id' => $client->id,
             'name' => $client->name,
@@ -86,6 +90,9 @@ class ClientController extends Controller
             'sponsor_number' => $sponsor->number ?? null,
             'front_id_image' => $client->front_id_image,
             'back_id_image' => $client->back_id_image ?? null,
+            'current_rented_car_name' => $current_renting ? $car->name : null,
+            'renting_start_date' => $current_renting->start_date ?? null,
+            'renting_end_date' => $current_renting->end_date ?? null,
         ];
         return response()->json(['clientDetails' => $clientData]);
     }
