@@ -43,7 +43,7 @@ class RentController extends Controller
         $rent = new CarRenting([
             'client_id' => $client_id,
             'car_id' => $car_id,
-            'sponsor_id' => Sponser::where('client_id', $client_id)->first()->id,
+            'sponsor_id' => Sponser::where('client_id', $client_id)->first() ? Sponser::where('client_id', $client_id)->first()->id : null,
             'renting_finished' => false,
             'start_date' => Carbon::createFromFormat('d/m/Y', $start_date)->format('Y-m-d H:i:s'),
             'end_date' => Carbon::createFromFormat('d/m/Y', $end_date)->format('Y-m-d H:i:s'),
