@@ -30,7 +30,7 @@ class RentController extends Controller
         $start_date = $request->start_date;
         $end_date = $request->end_date;
         $videoPath = $request->file('video')->store('insurence_videos', 'public');
-        // dd(Client::find($client_id));
+
 
         if (Client::find($client_id)->hasRented) {
             return response()->json(['error' => "Client has already rented the car!"]);
@@ -45,8 +45,8 @@ class RentController extends Controller
             'car_id' => $car_id,
             'sponsor_id' => Sponser::where('client_id', $client_id)->first() ? Sponser::where('client_id', $client_id)->first()->id : null,
             'renting_finished' => false,
-            'start_date' => Carbon::createFromFormat('d/m/Y', $start_date)->format('Y-m-d H:i:s'),
-            'end_date' => Carbon::createFromFormat('d/m/Y', $end_date)->format('Y-m-d H:i:s'),
+            'start_date' => $start_date,
+            'end_date' => $end_date,
             'video' => $videoPath,
         ]);
         $rent->save();

@@ -37,6 +37,7 @@ class CarController extends Controller
         foreach ($cars as $car) {
             $carRenting = CarRenting::where('car_id', $car->id)->latest()->first();
             $carData[] = [
+                'id' => $car->id,
                 'name' => $car->name,
                 'model' => $car->model,
                 'isRented' => $car->isRented,

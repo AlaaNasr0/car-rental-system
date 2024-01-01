@@ -37,7 +37,8 @@ class StatsController extends Controller
                 'sponsor_name' => $sponsor->name ?? null,
                 'sponsor_number' => $sponsor->number ?? null,
                 'start_date' => $renting->start_date,
-                'end_date' => $renting->end_date
+                'end_date' => $renting->end_date,
+                'insurance_video' => $renting->video
             ];
         }
         return response()->json($data);
