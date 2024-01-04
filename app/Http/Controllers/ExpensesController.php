@@ -20,6 +20,7 @@ class ExpensesController extends Controller
         $revenue = $income - $outcome;
         foreach ($transactions as $transaction) {
             $transactionsData[] = [
+				'id' => $transaction->id,
                 'trans_type' => $transaction->type,
                 'trans_amount' => $transaction->amount,
                 'trans_desc' => $transaction->description
@@ -36,7 +37,7 @@ class ExpensesController extends Controller
     public function addTransaction(Request $request)
     {
         $type = $request->type;
-        $amount = $request->amount;
+        $amount = floatval($request->amount);
         $desc = $request->desc;
 
         $new_transaction = new FundTransaction([

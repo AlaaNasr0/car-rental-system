@@ -39,8 +39,10 @@ class CarController extends Controller
             $carData[] = [
                 'id' => $car->id,
                 'name' => $car->name,
+				'licence_plate_number' => $car->licence_plate_number,
                 'model' => $car->model,
                 'isRented' => $car->isRented,
+				'image' => $car->image,
                 'client_name' => $car->isRented ? Client::find($carRenting->client_id)->name : null,
                 'starting_date' => $car->isRented ? $carRenting->start_date : null,
                 'ending_date' => $car->isRented ? $carRenting->end_date : null,
